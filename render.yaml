@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: ello-clinic-api
+    runtime: docker
+    rootDir: src/ElloClinic.Api
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase: { name: ello-clinic-db, property: connectionString }
+      - key: JWT_KEY
+        generateValue: true
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+  - type: web
+    name: ello-clinic-web
+    runtime: docker
+    rootDir: web
+    envVars:
+      - key: API_HOST
+        fromService: { type: web, name: ello-clinic-api, property: host }
+databases:
+  - name: ello-clinic-db
+    plan: basic-256mb
+    databaseName: ello_clinic
+    user: ello

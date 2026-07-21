@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment: { POSTGRES_DB: ello_clinic, POSTGRES_USER: postgres, POSTGRES_PASSWORD: postgres }
+    volumes: [ello_pgdata:/var/lib/postgresql/data]
+    healthcheck: { test: ["CMD-SHELL", "pg_isready -U postgres -d ello_clinic"], interval: 5s, timeout: 5s, retries: 10 }
+  api:
+    build: { context: ./src/ElloClinic.Api }
+    environment: { ASPNETCORE_ENVIRONMENT: Development, DATABASE_URL: "Host=postgres;Database=ello_clinic;Username=postgres;Password=postgres", JWT_KEY: "local-development-key-with-at-least-32-chars" }
+    ports: ["8080:8080"]
+    depends_on: { postgres: { condition: service_healthy } }
+  web:
+    build: { context: ./web }
+    ports: ["4200:80"]
+    depends_on: [api]
+volumes: { ello_pgdata: {} }
