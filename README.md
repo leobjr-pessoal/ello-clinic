@@ -23,7 +23,7 @@ Para executar sem Docker, inicie PostgreSQL, rode `dotnet run --project src/Ello
 
 O backend concentra módulos no mesmo processo e mantém limites por domínio. Todo agregado operacional deriva de `TenantEntity`; o contexto injeta o tenant do token em inclusões e aplica query filter global nas leituras. Agenda rejeita sobreposição de profissional, paciente ou sala. Evoluções finalizadas são tratadas como registros clínicos imutáveis na evolução planejada do módulo.
 
-O MVP inclui autenticação, dashboard, catálogo clínico, profissionais, pacientes, agenda, evolução e financeiro. Recorrência avançada, anexos em object storage, refresh tokens, MFA, filas, documentos e integrações de WhatsApp/pagamento pertencem às fases seguintes descritas no refinamento.
+O MVP inclui autenticação, dashboard, catálogo clínico, profissionais, pacientes, agenda, evolução e financeiro. Recorrência avançada, anexos em object storage, refresh tokens, MFA, filas, documentos e integração de pagamentos pertencem às fases seguintes descritas no refinamento.
 
 ## Deploy no Render
 
