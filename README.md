@@ -19,6 +19,16 @@ Acesse `http://localhost:4200`. Usuário inicial: tenant `demo`, e-mail `admin@e
 
 Para executar sem Docker, inicie PostgreSQL, rode `dotnet run --project src/ElloClinic.Api` e, em `web`, execute `npm install` e `npm start`.
 
+## Testes e cobertura
+
+Execute a suíte completa com:
+
+```bash
+dotnet test ElloClinic.sln
+```
+
+Os testes unitários e de integração validam autenticação, isolamento multi-tenant, perfis de acesso, agenda, confirmação pública, prontuário, relatórios e financeiro. O build falha automaticamente se a cobertura de linhas da API ficar abaixo de 85%. O relatório Cobertura é gerado em `tests/ElloClinic.Api.Tests/TestResults/coverage.cobertura.xml`.
+
 ## Estrutura e decisões
 
 O backend concentra módulos no mesmo processo e mantém limites por domínio. Todo agregado operacional deriva de `TenantEntity`; o contexto injeta o tenant do token em inclusões e aplica query filter global nas leituras. Agenda rejeita sobreposição de profissional, paciente ou sala. Evoluções finalizadas são tratadas como registros clínicos imutáveis na evolução planejada do módulo.

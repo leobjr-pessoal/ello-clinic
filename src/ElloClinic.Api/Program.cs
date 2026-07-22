@@ -116,7 +116,7 @@ api.MapPost("/payables", async (Payable input, ClinicDbContext db) => { db.Add(i
 api.MapPut("/payables/{id:guid}", async (Guid id, Payable input, ClinicDbContext db) => { var item = await db.Payables.FindAsync(id); if (item is null) return Results.NotFound(); item.Description = input.Description; item.Category = input.Category; item.Amount = input.Amount; item.DueDate = input.DueDate; item.Status = input.Status; await db.SaveChangesAsync(); return Results.Ok(item); }).RequireAuthorization(p => p.RequireRole("ClinicAdmin", "Finance"));
 api.MapDelete("/payables/{id:guid}", async (Guid id, ClinicDbContext db) => { var item = await db.Payables.FindAsync(id); if (item is null) return Results.NotFound(); db.Remove(item); await db.SaveChangesAsync(); return Results.NoContent(); }).RequireAuthorization(p => p.RequireRole("ClinicAdmin", "Finance"));
 
-await InitializeAsync(app);
+if (!app.Environment.IsEnvironment("Testing")) await InitializeAsync(app);
 app.Run();
 
 static string NormalizeDatabaseUrl(string value) { if (!value.StartsWith("postgres://") && !value.StartsWith("postgresql://")) return value; var uri = new Uri(value); var credentials = uri.UserInfo.Split(':', 2); return $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Username={Uri.UnescapeDataString(credentials[0])};Password={Uri.UnescapeDataString(credentials[1])};SSL Mode=Prefer;Trust Server Certificate=true"; }

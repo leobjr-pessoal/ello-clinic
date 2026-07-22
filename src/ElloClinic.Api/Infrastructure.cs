@@ -12,6 +12,7 @@ public sealed class TenantContext(IHttpContextAccessor accessor) : ITenantContex
 
 public sealed class ClinicDbContext(DbContextOptions<ClinicDbContext> options, ITenantContext tenant) : DbContext(options)
 {
+    public Guid CurrentTenantId => tenant.TenantId;
     public DbSet<Tenant> Tenants => Set<Tenant>(); public DbSet<AppUser> Users => Set<AppUser>(); public DbSet<Unit> Units => Set<Unit>(); public DbSet<Room> Rooms => Set<Room>();
     public DbSet<Specialty> Specialties => Set<Specialty>(); public DbSet<ClinicService> Services => Set<ClinicService>(); public DbSet<Professional> Professionals => Set<Professional>();
     public DbSet<Patient> Patients => Set<Patient>(); public DbSet<Appointment> Appointments => Set<Appointment>(); public DbSet<ClinicalEvolution> Evolutions => Set<ClinicalEvolution>();
@@ -26,7 +27,7 @@ public sealed class ClinicDbContext(DbContextOptions<ClinicDbContext> options, I
         foreach (var type in b.Model.GetEntityTypes().Where(x => typeof(TenantEntity).IsAssignableFrom(x.ClrType)))
         {
             var p = Expression.Parameter(type.ClrType, "e"); var tenantProp = Expression.Property(p, nameof(TenantEntity.TenantId));
-            var current = Expression.Property(Expression.Constant(tenant), nameof(ITenantContext.TenantId));
+            var current = Expression.Property(Expression.Constant(this), nameof(CurrentTenantId));
             type.SetQueryFilter(Expression.Lambda(Expression.Equal(tenantProp, current), p));
             type.AddIndex(type.FindProperty(nameof(TenantEntity.TenantId))!);
         }

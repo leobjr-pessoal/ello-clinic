@@ -3,6 +3,7 @@
 **/node_modules/
 **/dist/
 **/.angular/cache/
+**/TestResults/
 .env
 .idea/
 .vscode/
