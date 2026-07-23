@@ -35,6 +35,8 @@ O backend concentra módulos no mesmo processo e mantém limites por domínio. T
 
 O MVP inclui autenticação, dashboard, catálogo clínico, profissionais, pacientes, agenda, evolução e financeiro. Recorrência avançada, anexos em object storage, refresh tokens, MFA, filas, documentos e integração de pagamentos pertencem às fases seguintes descritas no refinamento.
 
+O conceito futuro de totem touchscreen está documentado em `docs/REFINAMENTO_TOTEM_AUTOATENDIMENTO.md` e permanece no backlog, sem implementação nesta fase.
+
 ## Deploy no Render
 
 O `render.yaml` cria o ambiente de homologação de menor custo:
