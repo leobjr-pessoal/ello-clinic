@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: ello-clinic-api-leobjr
+    name: ello-clinic-api
     runtime: docker
     plan: free
     region: virginia
@@ -36,7 +36,7 @@ services:
     routes:
       - type: rewrite
         source: /api/*
-        destination: https://ello-clinic-api-leobjr.onrender.com/api/*
+        destination: https://ello-clinic-api.onrender.com/api/*
       - type: rewrite
         source: /*
         destination: /index.html
