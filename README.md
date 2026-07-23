@@ -44,7 +44,7 @@ O `render.yaml` cria o ambiente de homologação de menor custo:
 - PostgreSQL gratuito, acessível somente pela rede privada;
 - chave JWT aleatória, CORS restrito, health check com banco e deploy somente após os checks passarem.
 
-No painel do Render, escolha **New > Blueprint**, conecte `leobjr-pessoal/ello-clinic`, selecione a branch `main` e aplique o Blueprint. Ao terminar, acesse `https://ello-clinic-web-leobjr.onrender.com`, crie a clínica pelo trial e guarde o identificador exibido para os próximos logins.
+No painel do Render, escolha **New > Blueprint**, conecte `leobjr-pessoal/ello-clinic`, selecione a branch `main` e aplique o Blueprint. Ao terminar, acesse `https://ello-clinic-web.onrender.com`, crie a clínica pelo trial e guarde o identificador exibido para os próximos logins.
 
 O plano gratuito é adequado somente para homologação com dados fictícios: a API pode levar cerca de um minuto para despertar e o PostgreSQL gratuito expira após 30 dias, não oferecendo backups. Antes de inserir pacientes reais, altere o plano da API para `starter`, o banco para pelo menos `basic-256mb`, configure backups e faça a revisão jurídica/LGPD.
 

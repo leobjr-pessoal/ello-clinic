@@ -15,9 +15,9 @@ services:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
       - key: CORS_ORIGINS
-        value: https://ello-clinic-web-leobjr.onrender.com
+        value: https://ello-clinic-web.onrender.com
   - type: web
-    name: ello-clinic-web-leobjr
+    name: ello-clinic-web
     runtime: static
     rootDir: web
     buildCommand: npm ci && npm run build
