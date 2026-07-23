@@ -3,11 +3,13 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { DatePipe, CurrencyPipe } from '@angular/common';
+import './homologation.css';
 
 const api = (location.hostname === 'localhost' ? 'http://localhost:8080' : (window as any).__API_URL__ || '') + '/api';
 const authInterceptor = (req: any, next: any) => next(req.clone({setHeaders: {Authorization: `Bearer ${localStorage.getItem('ello_token') || ''}`}}));
 
 @Component({selector:'app-root',standalone:true,imports:[FormsModule,DatePipe,CurrencyPipe],template:`
+<div class="homologation-banner">AMBIENTE DE HOMOLOGAÇÃO — NÃO INSIRA DADOS REAIS DE PACIENTES</div>
 @if (isLanding) {
   <div class="landing"><nav class="landing-nav"><a class="landing-logo" href="/"><b>e</b><span>ello<small>clinic</small></span></a><div><a href="#recursos">Recursos</a><a href="#precos">Planos</a><a href="#seguranca">Segurança</a></div><button (click)="openLogin()">Entrar</button></nav>
   <main><section class="hero"><div class="hero-copy"><span class="eyebrow">GESTÃO PARA CLÍNICAS MULTIDISCIPLINARES</span><h1>Mais tempo para cuidar.<br><em>Mais clareza para crescer.</em></h1><p>Agenda, prontuários, financeiro e gestão profissional conectados em uma plataforma segura e simples de usar.</p><div class="hero-actions"><button class="landing-primary" (click)="startTrial('professional')">Começar teste gratuito <span>→</span></button><a href="#recursos">Conhecer a plataforma</a></div><small>✓ 14 dias grátis · ✓ Sem cartão · ✓ Cancele quando quiser</small></div><div class="hero-visual"><div class="mock-window"><header><i></i><i></i><i></i><span>ello clinic</span></header><div class="mock-app"><aside><b>e</b><i></i><i></i><i></i><i></i><i></i></aside><section><small>VISÃO GERAL</small><h3>Bom dia, Ana!</h3><div class="mock-metrics"><i></i><i></i><i></i></div><div class="mock-content"><div><b>Agenda de hoje</b><span></span><span></span><span></span></div><div><b>Operação</b><em>87%</em></div></div></section></div></div><div class="floating-card patients">♙ <span><b>+18 pacientes</b><small>este mês</small></span></div><div class="floating-card secure">✓ <span><b>Dados protegidos</b><small>LGPD e auditoria</small></span></div></div></section>
@@ -74,7 +76,7 @@ class App {
   reportData = signal<any>(null); reportFrom = new Date(new Date().getFullYear(),new Date().getMonth(),1).toISOString().slice(0,10); reportTo = new Date().toISOString().slice(0,10);
   weekStart = signal(this.startOfWeek(new Date())); agendaProfessional = ''; agendaStatus = '';
   formOpen = signal(false); formKind = signal(''); editingId = signal<string|null>(null); formError = signal(''); saving = signal(false); configTab = signal('specialty'); search = '';
-  formData: Record<string, any> = {}; credentials=location.hostname==='localhost'?{tenant:'demo',email:'admin@ello.local',password:'Ello@123'}:{tenant:'',email:'',password:''};
+  formData: Record<string, any> = {}; credentials={tenant:'',email:'',password:''};
   nav=[{key:'dashboard',label:'Visão geral',icon:'⌂'},{key:'agenda',label:'Agenda',icon:'▦'},{key:'pacientes',label:'Pacientes',icon:'♙'},{key:'profissionais',label:'Profissionais',icon:'♧'},{key:'prontuarios',label:'Prontuários',icon:'▤'},{key:'repasses',label:'Meus repasses',icon:'◈'},{key:'financeiro',label:'Financeiro',icon:'◇'},{key:'relatorios',label:'Relatórios',icon:'▥'},{key:'configuracoes',label:'Configurações',icon:'⚙'}];
   configTabs=[{key:'specialty',label:'Especialidades'},{key:'service',label:'Serviços'},{key:'unit',label:'Unidades'},{key:'room',label:'Salas'}];
   appointmentStatuses=[{value:'PreScheduled',label:'Pré-agendado'},{value:'AwaitingConfirmation',label:'Aguardando confirmação'},{value:'Confirmed',label:'Confirmado'},{value:'Arrived',label:'Paciente chegou'},{value:'InProgress',label:'Em atendimento'},{value:'Completed',label:'Realizado'},{value:'PatientCancelled',label:'Cancelado pelo paciente'},{value:'NoShow',label:'Falta'},{value:'AwaitingPayment',label:'Aguardando pagamento'},{value:'Finalized',label:'Finalizado'}];

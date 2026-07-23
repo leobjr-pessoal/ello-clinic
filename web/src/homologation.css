@@ -1,0 +1,15 @@
+.homologation-banner {
+  min-height: 32px;
+  display: grid;
+  place-items: center;
+  padding: 7px 16px;
+  background: #fff3cd;
+  color: #765c15;
+  border-bottom: 1px solid #ead48b;
+  text-align: center;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .7px;
+}
+
+.landing-nav { top: 32px; }
