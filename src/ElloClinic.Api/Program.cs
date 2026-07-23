@@ -14,7 +14,7 @@ builder.Services.AddHttpContextAccessor(); builder.Services.AddScoped<ITenantCon
 builder.Services.AddDbContext<ClinicDbContext>(o => o.UseNpgsql(NormalizeDatabaseUrl(connection!)));
 builder.Services.AddScoped<TokenService>(); builder.Services.AddEndpointsApiExplorer(); builder.Services.AddSwaggerGen();
 builder.Services.ConfigureHttpJsonOptions(o => o.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
-var jwtKey = builder.Configuration["Jwt:Key"] ?? Environment.GetEnvironmentVariable("JWT_KEY") ?? "development-only-key-change-me-32-chars";
+var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? builder.Configuration["Jwt:Key"] ?? "development-only-key-change-me-32-chars";
 if (!builder.Environment.IsDevelopment() && (jwtKey.Length < 32 || jwtKey.StartsWith("development-", StringComparison.Ordinal))) throw new InvalidOperationException("JWT_KEY segura não configurada.");
 builder.Configuration["Jwt:Key"] = jwtKey;
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(o => o.TokenValidationParameters = new TokenValidationParameters { ValidateIssuer = false, ValidateAudience = false, ValidateLifetime = true, ValidateIssuerSigningKey = true, IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)), RoleClaimType = System.Security.Claims.ClaimTypes.Role });
