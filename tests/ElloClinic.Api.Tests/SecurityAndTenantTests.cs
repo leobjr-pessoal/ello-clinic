@@ -9,6 +9,28 @@ namespace ElloClinic.Api.Tests;
 
 public sealed class SecurityAndTenantTests
 {
+    [Theory]
+    [InlineData("postgresql://ello:secret@internal-db/ello_clinic", "Port=5432")]
+    [InlineData("postgres://ello:secret@internal-db:6543/ello_clinic", "Port=6543")]
+    public void Database_url_uses_explicit_or_default_postgres_port(string url, string expectedPort)
+    {
+        var connection = DatabaseUrls.Normalize(url);
+        Assert.Contains("Host=internal-db", connection);
+        Assert.Contains(expectedPort, connection);
+        Assert.Contains("Database=ello_clinic", connection);
+    }
+
+    [Fact]
+    public void Database_url_preserves_standard_connection_strings_and_decodes_credentials()
+    {
+        const string standard = "Host=localhost;Database=ello";
+        Assert.Equal(standard, DatabaseUrls.Normalize(standard));
+        var normalized = DatabaseUrls.Normalize("postgresql://user%40mail:p%40ss@db/ello");
+        Assert.Contains("Username=user@mail", normalized);
+        Assert.Contains("Password=p@ss", normalized);
+        Assert.Throws<FormatException>(() => DatabaseUrls.Normalize("postgresql://db/ello"));
+    }
+
     [Fact]
     public void Password_hash_is_salted_and_verifiable()
     {

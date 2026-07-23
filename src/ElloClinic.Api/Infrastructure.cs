@@ -3,6 +3,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ElloClinic.Api;
 
+public static class DatabaseUrls
+{
+    public static string Normalize(string value)
+    {
+        if (!value.StartsWith("postgres://", StringComparison.OrdinalIgnoreCase) &&
+            !value.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase)) return value;
+        var uri = new Uri(value);
+        var credentials = uri.UserInfo.Split(':', 2);
+        if (credentials.Length != 2) throw new FormatException("DATABASE_URL não contém usuário e senha.");
+        var port = uri.IsDefaultPort || uri.Port < 1 ? 5432 : uri.Port;
+        return $"Host={uri.Host};Port={port};Database={uri.AbsolutePath.TrimStart('/')};Username={Uri.UnescapeDataString(credentials[0])};Password={Uri.UnescapeDataString(credentials[1])};SSL Mode=Prefer;Trust Server Certificate=true";
+    }
+}
+
 public interface ITenantContext { Guid TenantId { get; } Guid? UserId { get; } }
 public sealed class TenantContext(IHttpContextAccessor accessor) : ITenantContext
 {

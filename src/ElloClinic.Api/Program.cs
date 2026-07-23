@@ -11,7 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 var connection = Environment.GetEnvironmentVariable("DATABASE_URL") ?? builder.Configuration.GetConnectionString("Default");
 builder.Services.AddHttpContextAccessor(); builder.Services.AddScoped<ITenantContext, TenantContext>();
-builder.Services.AddDbContext<ClinicDbContext>(o => o.UseNpgsql(NormalizeDatabaseUrl(connection!)));
+builder.Services.AddDbContext<ClinicDbContext>(o => o.UseNpgsql(DatabaseUrls.Normalize(connection!)));
 builder.Services.AddScoped<TokenService>(); builder.Services.AddEndpointsApiExplorer(); builder.Services.AddSwaggerGen();
 builder.Services.ConfigureHttpJsonOptions(o => o.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? builder.Configuration["Jwt:Key"] ?? "development-only-key-change-me-32-chars";
@@ -121,7 +121,6 @@ api.MapDelete("/payables/{id:guid}", async (Guid id, ClinicDbContext db) => { va
 if (!app.Environment.IsEnvironment("Testing")) await InitializeAsync(app, app.Environment.IsDevelopment());
 app.Run();
 
-static string NormalizeDatabaseUrl(string value) { if (!value.StartsWith("postgres://") && !value.StartsWith("postgresql://")) return value; var uri = new Uri(value); var credentials = uri.UserInfo.Split(':', 2); return $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Username={Uri.UnescapeDataString(credentials[0])};Password={Uri.UnescapeDataString(credentials[1])};SSL Mode=Prefer;Trust Server Certificate=true"; }
 static string Slugify(string value) { var normalized = value.Normalize(NormalizationForm.FormD); var chars = normalized.Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark).ToArray(); return Regex.Replace(new string(chars).Normalize(NormalizationForm.FormC).ToLowerInvariant(), "[^a-z0-9]+", "-").Trim('-'); }
 static Guid? ClaimGuid(HttpContext http, string name) => Guid.TryParse(http.User.FindFirst(name)?.Value, out var id) ? id : null;
 static async Task InitializeAsync(WebApplication app, bool seedDemo) { using var scope = app.Services.CreateScope(); var db = scope.ServiceProvider.GetRequiredService<ClinicDbContext>(); await db.Database.EnsureCreatedAsync(); await db.Database.ExecuteSqlRawAsync("""
